@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Card, CardSkeleton } from "@/shared/components";
 import { CLI_TOOLS } from "@/shared/constants/cliTools";
 import { getModelsByProviderId, PROVIDER_ID_TO_ALIAS } from "@/shared/constants/models";
-import { ClaudeToolCard, CodexToolCard, DroidToolCard, OpenClawToolCard, DefaultToolCard, OpenCodeToolCard, MitmLinkCard } from "./components";
+import { ClaudeToolCard, CodexToolCard, DroidToolCard, OpenClawToolCard, HermesToolCard, DefaultToolCard, OpenCodeToolCard, MitmLinkCard } from "./components";
 import { MITM_TOOLS } from "@/shared/constants/cliTools";
 
 const CLOUD_URL = process.env.NEXT_PUBLIC_CLOUD_URL;
@@ -16,6 +16,7 @@ const STATUS_ENDPOINTS = {
   opencode: "/api/cli-tools/opencode-settings",
   droid: "/api/cli-tools/droid-settings",
   openclaw: "/api/cli-tools/openclaw-settings",
+  hermes: "/api/cli-tools/hermes-settings",
 };
 
 export default function CLIToolsPageClient({ machineId }) {
@@ -179,6 +180,8 @@ export default function CLIToolsPageClient({ machineId }) {
         return <DroidToolCard key={toolId} {...commonProps} activeProviders={getActiveProviders()} hasActiveProviders={hasActiveProviders} cloudEnabled={cloudEnabled} initialStatus={toolStatuses.droid} />;
       case "openclaw":
         return <OpenClawToolCard key={toolId} {...commonProps} activeProviders={getActiveProviders()} hasActiveProviders={hasActiveProviders} cloudEnabled={cloudEnabled} initialStatus={toolStatuses.openclaw} />;
+      case "hermes":
+        return <HermesToolCard key={toolId} {...commonProps} activeProviders={getActiveProviders()} hasActiveProviders={hasActiveProviders} cloudEnabled={cloudEnabled} initialStatus={toolStatuses.hermes} />;
       default:
         return <DefaultToolCard key={toolId} toolId={toolId} {...commonProps} activeProviders={getActiveProviders()} cloudEnabled={cloudEnabled} tunnelEnabled={tunnelEnabled} />;
     }
@@ -188,11 +191,19 @@ export default function CLIToolsPageClient({ machineId }) {
   const mitmTools = Object.entries(MITM_TOOLS);
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-4">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-1 sm:px-0">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-xl font-semibold text-text-main sm:text-2xl">CLI Tools</h1>
+        <p className="text-sm text-text-muted">Configure local coding tools to use your 9Router providers.</p>
+      </div>
+      <div className="grid gap-3 sm:gap-4">
         {regularTools.map(([toolId, tool]) => renderToolCard(toolId, tool))}
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="grid gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 px-1">
+          <span className="material-symbols-outlined text-[18px] text-primary">security</span>
+          <h2 className="text-sm font-semibold text-text-main">MITM Tools</h2>
+        </div>
         {mitmTools.map(([toolId, tool]) => (
           <MitmLinkCard key={toolId} tool={tool} />
         ))}
